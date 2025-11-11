@@ -1,0 +1,534 @@
+{
+	"info": {
+		"_postman_id": "bc0dcd54-53eb-4fa3-b02a-71d2011a88e9",
+		"name": "Restful-api collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24412769"
+	},
+	"item": [
+		{
+			"name": "GET all products",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Products should be an array\", function () {\r",
+							"    let products = pm.response.json();\r",
+							"    pm.expect(Array.isArray(products)).to.be.true;\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.restful-api.dev/objects",
+					"protocol": "https",
+					"host": [
+						"api",
+						"restful-api",
+						"dev"
+					],
+					"path": [
+						"objects"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET single product by ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Product should be an object\", function () {\r",
+							"    let product = pm.response.json();\r",
+							"    pm.expect(product).to.be.an('object');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Product id should match request id\", function () {\r",
+							"    let product = pm.response.json();\r",
+							"    let requestId = pm.variables.get(\"id\");\r",
+							"    pm.expect(product.id).to.equal(String(requestId));\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Product should have property name\", function () {\r",
+							"    let product = pm.response.json();\r",
+							"    pm.expect(product).to.have.property('name');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Product should have property data\", function () {\r",
+							"    let product = pm.response.json();\r",
+							"    pm.expect(product).to.have.property('data');\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.restful-api.dev/objects/{{id}}",
+					"protocol": "https",
+					"host": [
+						"api",
+						"restful-api",
+						"dev"
+					],
+					"path": [
+						"objects",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET products by IDs",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Products should have length 3\", function () {",
+							"    let products = pm.response.json();",
+							"    pm.expect(products).to.have.length(3);",
+							"});",
+							"",
+							"pm.test(\"Products IDs should equal expected IDs\", function () {",
+							"    let products = pm.response.json();",
+							"    const actualIds = products.map(p => Number(p.id));",
+							"    const expectedIds = [",
+							"        pm.variables.get('id1'),",
+							"        pm.variables.get('id2'),",
+							"        pm.variables.get('id3')",
+							"    ].map(id => Number(id));",
+							"    pm.expect(actualIds).to.eql(expectedIds);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.restful-api.dev/objects?id={{id1}}&id={{id2}}&id={{id3}}",
+					"protocol": "https",
+					"host": [
+						"api",
+						"restful-api",
+						"dev"
+					],
+					"path": [
+						"objects"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "{{id1}}"
+						},
+						{
+							"key": "id",
+							"value": "{{id2}}"
+						},
+						{
+							"key": "id",
+							"value": "{{id3}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add new product",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Product name should be Apple MacBook Pro 16\", function () {\r",
+							"    let product = pm.response.json();\r",
+							"    pm.expect(product.name).to.be.equal('Apple MacBook Pro 16');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Product year should be 2019\", function () {\r",
+							"    let product = pm.response.json();\r",
+							"    pm.expect(product.data.year).to.be.equal(2019);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Product price should be 1849.99\", function () {\r",
+							"    let product = pm.response.json();\r",
+							"    pm.expect(product.data.price).to.be.equal(1849.99);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Product CPU model should be Intel Core i9\", function () {\r",
+							"    let product = pm.response.json();\r",
+							"    pm.expect(product.data['CPU model']).to.be.equal('Intel Core i9');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Product Hard disk size should be 1 TB\", function () {\r",
+							"    let product = pm.response.json();\r",
+							"    pm.expect(product.data['Hard disk size']).to.be.equal('1 TB');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Product creation date should match the scheme\", function () {\r",
+							"    let product = pm.response.json();\r",
+							"    pm.expect(product.createdAt).to.match(/^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}(Z|[\\+\\-]\\d{2}:\\d{2})$/);\r",
+							"});\r",
+							"\r",
+							"let responseData = pm.response.json();\r",
+							"pm.collectionVariables.set(\"createdId\", responseData.id);"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"name\": \"Apple MacBook Pro 16\",\r\n   \"data\": {\r\n      \"year\": 2019,\r\n      \"price\": 1849.99,\r\n      \"CPU model\": \"Intel Core i9\",\r\n      \"Hard disk size\": \"1 TB\"\r\n   }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api.restful-api.dev/objects",
+					"protocol": "https",
+					"host": [
+						"api",
+						"restful-api",
+						"dev"
+					],
+					"path": [
+						"objects"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update product by ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Product name should be Apple MacBook Pro 17\", function () {\r",
+							"    let product = pm.response.json();\r",
+							"    pm.expect(product.name).to.be.equal('Apple MacBook Pro 17');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Product year should be 2020\", function () {\r",
+							"    let product = pm.response.json();\r",
+							"    pm.expect(product.data.year).to.be.equal(2020);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Product price should be 2000.99\", function () {\r",
+							"    let product = pm.response.json();\r",
+							"    pm.expect(product.data.price).to.be.equal(2000.99);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Product CPU model should be Intel Core i10\", function () {\r",
+							"    let product = pm.response.json();\r",
+							"    pm.expect(product.data['CPU model']).to.be.equal('Intel Core i10');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Product Hard disk size should be 2 TB\", function () {\r",
+							"    let product = pm.response.json();\r",
+							"    pm.expect(product.data['Hard disk size']).to.be.equal('2 TB');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Product color should be silver\", function () {\r",
+							"    let product = pm.response.json();\r",
+							"    pm.expect(product.data.color).to.be.equal('silver');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Product update date should match the scheme\", function () {\r",
+							"    let product = pm.response.json();\r",
+							"    pm.expect(product.updatedAt).to.match(/^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}(Z|[\\+\\-]\\d{2}:\\d{2})$/);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"name\": \"Apple MacBook Pro 17\",\r\n   \"data\": {\r\n      \"year\": 2020,\r\n      \"price\": 2000.99,\r\n      \"CPU model\": \"Intel Core i10\",\r\n      \"Hard disk size\": \"2 TB\",\r\n      \"color\": \"silver\"\r\n   }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api.restful-api.dev/objects/{{createdId}}",
+					"protocol": "https",
+					"host": [
+						"api",
+						"restful-api",
+						"dev"
+					],
+					"path": [
+						"objects",
+						"{{createdId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Partically update product by ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Product name should be Apple MacBook Pro 18\", function () {\r",
+							"    let product = pm.response.json();\r",
+							"    pm.expect(product.name).to.be.equal('Apple MacBook Pro 18');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Product year should be 2020\", function () {\r",
+							"    let product = pm.response.json();\r",
+							"    pm.expect(product.data.year).to.be.equal(2020);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Product price should be 2000.99\", function () {\r",
+							"    let product = pm.response.json();\r",
+							"    pm.expect(product.data.price).to.be.equal(2000.99);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Product CPU model should be Intel Core i10\", function () {\r",
+							"    let product = pm.response.json();\r",
+							"    pm.expect(product.data['CPU model']).to.be.equal('Intel Core i10');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Product Hard disk size should be 2 TB\", function () {\r",
+							"    let product = pm.response.json();\r",
+							"    pm.expect(product.data['Hard disk size']).to.be.equal('2 TB');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Product color should be silver\", function () {\r",
+							"    let product = pm.response.json();\r",
+							"    pm.expect(product.data.color).to.be.equal('silver');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Product update date should match the scheme\", function () {\r",
+							"    let product = pm.response.json();\r",
+							"    pm.expect(product.updatedAt).to.match(/^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}(Z|[\\+\\-]\\d{2}:\\d{2})$/);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"name\": \"Apple MacBook Pro 18\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api.restful-api.dev/objects/{{createdId}}",
+					"protocol": "https",
+					"host": [
+						"api",
+						"restful-api",
+						"dev"
+					],
+					"path": [
+						"objects",
+						"{{createdId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete product by ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "https://api.restful-api.dev/objects/{{createdId}}",
+					"protocol": "https",
+					"host": [
+						"api",
+						"restful-api",
+						"dev"
+					],
+					"path": [
+						"objects",
+						"{{createdId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Verify that object is deleted",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Object no longer exists\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.restful-api.dev/objects/{{createdId}}\n",
+					"protocol": "https",
+					"host": [
+						"api",
+						"restful-api",
+						"dev"
+					],
+					"path": [
+						"objects",
+						"{{createdId}}\n"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "createdId",
+			"value": ""
+		},
+		{
+			"key": "id",
+			"value": ""
+		},
+		{
+			"key": "id1",
+			"value": ""
+		},
+		{
+			"key": "id2",
+			"value": ""
+		},
+		{
+			"key": "id3",
+			"value": "",
+			"type": "default"
+		}
+	]
+}
